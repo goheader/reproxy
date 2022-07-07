@@ -1,2 +1,0 @@
-# reproxy
-study frp
