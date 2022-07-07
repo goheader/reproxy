@@ -35,6 +35,46 @@ type NewProxy struct {
 	//tcpmux
 	Multiplexer string `json:"multiplexer,omitempty"`
 
-
-
 }
+
+
+
+type Login struct {
+	Version string  `json:"vsersion,omitempty"`
+	Hostname string  `json:"hostname,omitempty"`
+	Os string `json:"os,omitempty"`
+	Arch string `json:"arch,omitempty"`
+	User string `json:"user,omitempty"`
+	PrivilegeKey string `json:"privilege_key,omitempty"`
+	Timestamp int64 `json:"timestamp,omitempty"`
+	RunID string `json:"run_id,omitempty"`
+	Metas map[string]string `json:"metas,omitempty"`
+	
+	//Some global configures
+	PoolCount int `json:"pool_count,omitempty"`
+}
+
+
+type Ping struct {
+	PrivilegeKey string `json:"privilege_key,omitempty"`
+	Timestamp int64 `json:"timestamp,omitempty"`
+}
+
+
+
+type Pong struct {
+	Error string `json:"error,omitempty"`
+}
+
+
+
+type NewWorkConn struct {
+	RunID string `json:"run_id,omitempty"`
+	PrivilegeKey string `json:"privilege_key,omitempty"`
+	Timestamp int64 `json:"timestamp,omitempty"`
+}
+
+
+
+
+

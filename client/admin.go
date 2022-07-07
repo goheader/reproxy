@@ -1,6 +1,9 @@
 package client
 
-import "time"
+import (
+	"github.com/gorilla/mux"
+	"time"
+)
 
 var (
 	httpServerReadTimeout = 60 * time.Second
@@ -8,5 +11,9 @@ var (
 )
 
 func (srv *Service) RunAdminServer(address string) (err error){
-	router := mux.new
+	//url router
+	router := mux.NewRouter()
+
+	router.HandleFunc("/healthz",srv.)
+
 }
