@@ -1,8 +1,10 @@
 package config
 
 import (
+	"gopkg.in/ini.v1"
 	"reflect"
 	"reproxy/pkg/consts"
+	"reproxy/pkg/msg"
 )
 
 var (
@@ -18,6 +20,17 @@ var (
 		consts.SUDPProxy:   reflect.TypeOf(SUDPProxyConf{}),
 	}
 )
+
+type ProxyConf interface {
+	GetBaseInfo() *BaseProxyConf
+	UnmarshalFromMsg(*msg.NewProxy)
+	UnmarshalFromIni(string,string,*ini.Section) error
+	MarshalToMsg(*msg.NewProxy)
+	CheckForCli() error
+	CheckForSvr(ServerCommonConf) error
+
+}
+
 
 //TCP
 type TCPProxyConf struct {
