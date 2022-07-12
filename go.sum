@@ -1,4 +1,6 @@
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
+github.com/fatedier/beego v1.7.2 h1:kVw3oKiXccInqG+Z/7l8zyRQXrsCQEfcUxgzfGK+R8g=
+github.com/fatedier/beego v1.7.2/go.mod h1:wx3gB6dbIfBRcucp94PI9Bt3I0F2c/MyNEWuhzpWiwk=
 github.com/fatedier/golib v0.2.0 h1:8BxiUcjleBlXBYlTNUllD8KZZHaFU/NP/vP0Yu1Fkpg=
 github.com/fatedier/golib v0.2.0/go.mod h1:e2NPpBGUFsHDjXrfP1B5aK3S0+yUeVxgqfc3go3KNj0=
 github.com/golang/snappy v0.0.1/go.mod h1:/XxbfmMg8lxefKM7IXC3fBNl/7bRcc72aCRzEWrmP2Q=
