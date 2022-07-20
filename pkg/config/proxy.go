@@ -28,6 +28,7 @@ type ProxyConf interface {
 	MarshalToMsg(*msg.NewProxy)
 	CheckForCli() error
 	CheckForSvr(ServerCommonConf) error
+	Compare(ProxyConf) bool
 
 }
 
@@ -131,4 +132,52 @@ type HealthCheckConf struct {
 type DomainConf struct {
 	CustomDomains []string `ini:"custom_domains" json:"custom_domains"`
 	SubDomain     string   `ini:"sub_domain" json:"sub_domain"`
+}
+
+
+func defaultBaseProxyConf(proxyType string) BaseProxyConf{
+	return BaseProxyConf{
+		ProxyType: proxyType,
+		LocalSvrConf: LocalSvrConf{
+			LocalIP: "127.0.0.1",
+		},
+	}
+}
+
+
+
+func DefaultProxyConf(proxyType string) ProxyConf{
+	var conf ProxyConf
+	switch proxyType {
+	case consts.TCPProxy:
+		conf = &TCPProxyConf{
+			BaseProxyConf: defaultBaseProxyConf(proxyType),
+		}
+	case consts.TCPMuxProxy:
+		conf = &TCPMuxProxyConf{
+			BaseProxyConf: defaultBaseProxyConf(proxyType),
+		}
+	case consts.UDPProxy:
+		conf = &UDPProxyConf{
+			BaseProxyConf: defaultBaseProxyConf(proxyType),
+		}
+	default:
+		return nil
+	}
+
+	return conf
+
+	}
+}
+
+
+
+
+
+func NewProxyConfFromIni(prefix,name string,section *ini.Section) (ProxyConf,error){
+	proxyType := section.Key("type").String()
+	if proxyType == "" {
+		proxyType = consts.TCPProxy
+	}
+	conf := DefaultPro
 }

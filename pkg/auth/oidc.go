@@ -11,3 +11,14 @@ type OidcClientConfig struct {
 	OidcAdditionalEndpointParams map[string]string `ini:"-" json:"oidc_additional_endpoint_params"`
 
 }
+
+
+func getDefaultOidcClientConf() OidcClientConfig{
+	return OidcClientConfig{
+		OidcClientID: "",
+		OidcClientSecret: "",
+		OidcAudience: "",
+		OidcTokenEndpointURL: "",
+		OidcAdditionalEndpointParams: make(map[string]string),
+	}
+}

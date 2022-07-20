@@ -3,6 +3,7 @@ package client
 import (
 	"github.com/fatedier/beego/logs"
 	"net/http"
+	"reproxy/pkg/config"
 )
 
 func (svr *Service) healthz(w http.ResponseWriter,r *http.Request){
@@ -20,6 +21,9 @@ func (svr *Service) apiReload(w http.ResponseWriter,r *http.Request){
 			w.Write([]byte(res.Msg))
 		}
 	}()
+	_,pxyCfgs,visitorCfgs,err := config.ParseClientConfig(svr.cfgFile)
+
+	if
 }
 
 

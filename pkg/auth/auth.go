@@ -24,4 +24,21 @@ type BaseConfig struct {
 
 }
 
+func GetDefaultClientConf() ClientConfig{
+	return ClientConfig{
+		BaseConfig: getDefaultBaseConf(),
+		OidcClientConfig: getDefaultOidcClientConf(),
+		TokenConfig: getDefaultTokenConf(),
+	}
+}
+
+
+func getDefaultBaseConf() BaseConfig{
+	return BaseConfig{
+		AuthenticationMethod: "token",
+		AuthenticateHeartBeats: false,
+		AuthenticateNewWorkConns: false,
+	}
+}
+
 
