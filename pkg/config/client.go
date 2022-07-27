@@ -6,6 +6,7 @@ import (
 	"os"
 	"path/filepath"
 	"reproxy/pkg/auth"
+	"reproxy/pkg/util/util"
 	"strings"
 )
 
@@ -173,7 +174,7 @@ func (cfg *ClientCommonConf) Validate() error{
 }
 
 
-func LoadAllProxyConfsFromIni(prefix string,source interface{},start []string) (map[string]ProxyConf,map[string]VisitorConf,error){
+func LoadAllProxyConfsFromIni(prefix string,source interface{},start []string)  (map[string]ProxyConf,map[string]VisitorConf,error){
 	f,err := ini.LoadSources(ini.LoadOptions{
 		Insensitive: false,
 		InsensitiveSections: false,
@@ -203,7 +204,16 @@ func LoadAllProxyConfsFromIni(prefix string,source interface{},start []string) (
 	}
 
 	rangeSections := make([]*ini.Section,0)
-	for _,section := range f.Sections(){
+	for _,section := range f.Sections() {
+		if !strings.HasPrefix(section.Name(), "range:") {
+			continue
+		}
+		rangeSections = append(rangeSections, section)
+	}
+
+	for _,section := range rangeSections{
+		err = renderRangeProxyTemplates(f,section)
+
 		name := section.Name()
 
 		if name == ini.DefaultSection || name == "common" || strings.HasPrefix(name,"range:"){
@@ -220,9 +230,69 @@ func LoadAllProxyConfsFromIni(prefix string,source interface{},start []string) (
 		}
 		switch roleType {
 		case "server":
-			newConf,newErr := NewPro
+			newConf,newErr := NewProxyConfFromIni(prefix,name,section)
+			if newErr != nil {
+				return nil,nil,fmt.Errorf("failed to parse proxy %s, err:%v",name,newErr)
+			}
+			proxyConfs[prefix+name] = newConf
+		case "visitor":
+			newConf,newErr := NewVisitorConfFromIni(prefix,name,section)
+			if newConf != nil {
+				return nil,nil,newErr
+			}
+			visitorConfs[prefix+name] = newConf
+		default:
+			return nil,nil,fmt.Errorf("proxy %s role should be 'server' or 'visitor'",name)
+
 		}
 	}
+	return proxyConfs,visitorConfs,nil
 
+}
+
+
+func renderRangeProxyTemplates(f *ini.File,section *ini.Section) error {
+	localPortStr := section.Key("local_port").String()
+	remotePortStr := section.Key("remote_port").String()
+	if localPortStr == "" || remotePortStr == "" {
+		return fmt.Errorf("local_port or remote_port is empty")
+	}
+	localPorts,err := util.ParseRangeNumbers(localPortStr)
+	if err != nil {
+		return err
+	}
+	remotePorts,err := util.ParseRangeNumbers(remotePortStr)
+	if err != nil {
+		return err
+	}
+	if len(localPorts) != len(remotePorts){
+		return fmt.Errorf("local ports number should be same with remote ports number")
+	}
+	if len(localPorts) == 0{
+		return fmt.Errorf("local_port and remote_port is necessary")
+	}
+	//Templates
+	prefix := strings.TrimSpace(strings.TrimPrefix(section.Name(),"range:"))
+
+	for i := range localPorts{
+		tmpname := fmt.Sprintf("%s_%d",prefix,i)
+
+		tmpsection,err := f.NewSection(tmpname)
+		if err != nil{
+			return err
+		}
+		copySection(section,tmpsection)
+		tmpsection.NewKey("local_port",fmt.Sprintf("%d",localPorts[i]))
+		tmpsection.NewKey("remote_port",fmt.Sprintf("%d",remotePorts[i]))
+
+	}
+	return nil
+}
+
+
+func copySection(source,target *ini.Section){
+	for key,value := range source.KeysHash(){
+		target.NewKey(key,value)
+	}
 }
 

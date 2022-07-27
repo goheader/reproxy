@@ -1,33 +1,39 @@
 package client
 
 import (
-	"github.com/fatedier/beego/logs"
 	"net/http"
 	"reproxy/pkg/config"
+	"reproxy/pkg/util/log"
 )
 
-func (svr *Service) healthz(w http.ResponseWriter,r *http.Request){
+func (svr *Service) healthz(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(200)
 }
 
-func (svr *Service) apiReload(w http.ResponseWriter,r *http.Request){
+func (svr *Service) apiReload(w http.ResponseWriter, r *http.Request) {
 	res := GeneralResponse{Code: 200}
 
-	logs.Info("api request [/api/reload]")
+	log.Info("api request [/api/reload]")
 	defer func() {
-		logs.Info("api response [/api/reload],code [%d]",res.Code)
+		log.Info("api response [/api/reload],code [%d]", res.Code)
 		w.WriteHeader(res.Code)
-		if len(res.Msg)>0{
+		if len(res.Msg) > 0 {
 			w.Write([]byte(res.Msg))
 		}
 	}()
-	_,pxyCfgs,visitorCfgs,err := config.ParseClientConfig(svr.cfgFile)
+	_, pxyCfgs, visitorCfgs, err := config.ParseClientConfig(svr.cfgFile)
 
-	if
+	if err != nil {
+		res.Code = 400
+		res.Msg = err.Error()
+		log.Warn("reload frpc proxy config error: %s",res.Msg)
+		return
+	}
+
+	if err = svr.Reload
 }
 
-
-type GeneralResponse struct{
+type GeneralResponse struct {
 	Code int
-	Msg string
+	Msg  string
 }

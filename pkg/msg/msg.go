@@ -4,7 +4,16 @@ const (
 	TypeLogin = 'o'
 	TypeLoginResp = '1'
 	TypeNewProxy = 'p'
+	TypeNewProxyResp='2'
+)
 
+var (
+	msgTypeMap = map[byte]interface{}{
+		TypeLogin: Login{},
+		TypeLoginResp: LoginResp{},
+		TypeNewProxy: NewProxy{},
+		TypeNewProxyResp:
+	}
 )
 
 
@@ -14,6 +23,7 @@ type NewProxy struct {
 	UseEncryption bool `json:"use_encryption,omitempty"`
 	UseCompression bool `json:"use_compression,omitempty"`
 	Group string `json:"group,omitempty"`
+	GroupKey string `json:"group_key,omitempty"`
 	Metas map[string]string `json:"metas,omitempty"`
 
 	//tcp and udp only
@@ -54,6 +64,13 @@ type Login struct {
 	PoolCount int `json:"pool_count,omitempty"`
 }
 
+type LoginResp struct {
+	Version string `json:"version,omitempty"`
+	RunID string `json:"run_id,omitempty"`
+	ServerUDPPort int `json:"server_udp_port,omitempty"`
+	Error string `json:"error,omitempty"`
+}
+
 
 type Ping struct {
 	PrivilegeKey string `json:"privilege_key,omitempty"`
@@ -72,6 +89,20 @@ type NewWorkConn struct {
 	RunID string `json:"run_id,omitempty"`
 	PrivilegeKey string `json:"privilege_key,omitempty"`
 	Timestamp int64 `json:"timestamp,omitempty"`
+}
+
+type NewProxyResp struct{
+	ProxyName string `json:"proxy_name,omitempty"`
+	RemoteAddr string `json:"remote_addr,omitempty"`
+	Error string `json:"error,omitempty"`
+}
+
+type ReqWorkConn struct {
+	
+}
+
+type CloseProxy struct {
+	ProxyName string `json:"proxy_name,omitempty"`
 }
 
 

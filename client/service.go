@@ -35,3 +35,23 @@ type Service struct {
 	ctx    context.Context
 	cancel context.CancelFunc
 }
+
+func (svr *Service) ReloadConf(pxyCfgs map[string]config.ProxyConf,visitorCfgs map[string]config.VisitorConf) error {
+	svr.cfgMu.Lock()
+	svr.pxyCfgs = pxyCfgs
+	svr.visitorCfgs = visitorCfgs
+	svr.cfgMu.Unlock()
+
+	svr.ctlMu.Lock()
+	ctl := svr.ctl
+	svr.ctlMu.Unlock()
+
+	if ctl != nil {
+		return svr.ctl.
+	}
+}
+
+
+func (ctl *Control) ReloadConf(pxyCfgs map[string]config.ProxyConf,visitorCfgs map[string]config.VisitorConf) error{
+	ctl.v
+}

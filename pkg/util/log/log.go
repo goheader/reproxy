@@ -52,3 +52,23 @@ func SetLogLevel(logLevel string){
 	Log.SetLevel(level)
 }
 
+func Error(format string, v ...interface{}){
+	Log.Error(format,v...)
+}
+
+func Warn(format string, v ...interface{}) {
+	Log.Warn(format,v...)
+}
+
+func Info(format string, v ...interface{}) {
+	Log.Info(format,v...)
+}
+
+func Debug(format string, v ...interface{}){
+	Log.Debug(format,v...)
+}
+
+func Trace(format string, v ...interface{}){
+	Log.Trace(format,v...)
+}
+
